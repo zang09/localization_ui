@@ -15,7 +15,6 @@ find_package(catkin REQUIRED COMPONENTS
  roslib
  std_msgs
  sensor_msgs
- message_generation
  hdl_localization
 )
 find_package(Qt5Widgets REQUIRED)
@@ -52,8 +51,6 @@ endif()
 ########################
 ## message generation ##
 ########################
-
-generate_messages(DEPENDENCIES std_msgs)
 
 ################################################################################
 # Setup for python modules and scripts
