@@ -145,11 +145,11 @@ void MainWindow::updateOdomData(double x, double y, double z)
     odom_y_ = y;
     odom_z_ = z;
 
-    str = str.sprintf("%.2lf m", odom_x_);
+    str = str.sprintf("%.3lf m", odom_x_);
     ui->le_curx->setText(str);
-    str = str.sprintf("%.2lf m", odom_y_);
+    str = str.sprintf("%.3lf m", odom_y_);
     ui->le_cury->setText(str);
-    str = str.sprintf("%.2lf m", odom_z_);
+    str = str.sprintf("%.3lf m", odom_z_);
     ui->le_curz->setText(str);
 }
 

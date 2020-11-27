@@ -61,7 +61,8 @@ private:
 
     ros::ServiceClient local_gps_client_;
 
-    double mapX_, mapY_, mapZ_;
+    double gps_error_;
+    double gps_odomX_, gps_odomY_, gps_odomZ_;
     double odomX_, odomY_, odomZ_;
 };
 

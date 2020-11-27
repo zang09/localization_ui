@@ -26,9 +26,10 @@
 QNode::QNode(int argc, char** argv ) :
     init_argc(argc),
     init_argv(argv),
-    mapX_(0.0),
-    mapY_(0.0),
-    mapZ_(0.0),
+    gps_error_(0.0),
+    gps_odomX_(0.0),
+    gps_odomY_(0.0),
+    gps_odomZ_(0.0),
     odomX_(0.0),
     odomY_(0.0),
     odomZ_(0.0)
@@ -56,7 +57,6 @@ bool QNode::init() {
     ros::NodeHandle nh;
     ros::NodeHandle private_nh("~");
 
-    initParams(private_nh);
     initPubAndSub(nh);
 
     start();
@@ -74,38 +74,13 @@ void QNode::run() {
     Q_EMIT rosShutDown();
 }
 
-void QNode::initParams(ros::NodeHandle node_handle)
-{
-    if (node_handle.hasParam("map_origin"))
-    {
-        XmlRpc::XmlRpcValue mapConfig;
-
-        try
-        {
-            node_handle.getParam("map_origin", mapConfig);
-            ROS_INFO("\033[1;36m----> Get map origin(UI).\033[0m");
-
-            int zone = 52;
-            double lat = mapConfig[0];
-            double lon = mapConfig[1];
-            mapZ_ = mapConfig[2];
-
-            Utm::LatLonToUTMXY(lat, lon, zone, mapX_, mapY_);
-        }
-        catch (XmlRpc::XmlRpcException &e)
-        {
-            ROS_ERROR_STREAM("ERROR reading sensor config: " << e.getMessage() <<
-                             " for process_noise_covariance (type: " << mapConfig.getType() << ")");
-        }
-    }
-}
 
 void QNode::initPubAndSub(ros::NodeHandle node_handle)
 {
     novatel_bestutm_sub_ = node_handle.subscribe("pwk7/bestutm", 1, &QNode::bestUtmCallback, this);
     align_state_sub_     = node_handle.subscribe("align_state", 1, &QNode::alignStateCallback, this);
     odom_sub_            = node_handle.subscribe("odom", 1, &QNode::odomCallback, this);
-    odom_gps_sub_        = node_handle.subscribe("gps_test_odom", 1, &QNode::odomGPSCallback, this);
+    odom_gps_sub_        = node_handle.subscribe("gps/odom", 1, &QNode::odomGPSCallback, this);
     local_gps_client_    = node_handle.serviceClient<hdl_localization::initGPS>("local/gps");
 }
 
@@ -119,9 +94,7 @@ void QNode::bestUtmCallback(const novatel_gps_msgs::NovatelUtmPosition::ConstPtr
     double x_std = msg->easting_sigma;
     double y_std = msg->northing_sigma;
 
-    double gps_error = sqrt(pow(x_std,2)+pow(y_std,2));
-
-    emit pushGPSData(x-mapX_, y-mapY_, z-mapZ_, gps_error);
+    gps_error_ = sqrt(pow(x_std,2)+pow(y_std,2));
 }
 
 void QNode::alignStateCallback(const std_msgs::Bool::ConstPtr &msg)
@@ -136,13 +109,14 @@ void QNode::odomCallback(const nav_msgs::Odometry::ConstPtr &msg)
     odomZ_ = msg->pose.pose.position.z;
 
     emit pushOdomData(odomX_, odomY_, odomZ_);
+    emit pushGPSData(gps_odomX_, gps_odomY_, gps_odomZ_, gps_error_);
 }
 
 void QNode::odomGPSCallback(const nav_msgs::Odometry::ConstPtr &msg)
 {
-    odomX_ = msg->pose.pose.position.x;
-    odomY_ = msg->pose.pose.position.y;
-    odomZ_ = msg->pose.pose.position.z;
+    gps_odomX_ = msg->pose.pose.position.x;
+    gps_odomY_ = msg->pose.pose.position.y;
+    gps_odomZ_ = msg->pose.pose.position.z;
 }
 
 void QNode::sendInitialPose(bool gps)
@@ -150,8 +124,8 @@ void QNode::sendInitialPose(bool gps)
     if(gps)
     {
         hdl_localization::initGPS srv;
-        srv.request.lat = mapX_;
-        srv.request.lon = mapY_;
+        srv.request.lat = gps_odomX_;
+        srv.request.lon = gps_odomY_;
         srv.request.gps = true;
 
         if (local_gps_client_.call(srv))
@@ -166,8 +140,8 @@ void QNode::sendInitialPose(bool gps)
     else
     {
         hdl_localization::initGPS srv;
-        srv.request.lat = 0;
-        srv.request.lon = 0;
+        srv.request.lat = 0.0;
+        srv.request.lon = 0.0;
         srv.request.gps = false;
 
         if (local_gps_client_.call(srv))
