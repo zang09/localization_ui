@@ -35,6 +35,8 @@ MainWindow::MainWindow(int argc, char** argv, QWidget *parent) :
     setWindowTitle("Localization control UI");
     qnode.init();
 
+    setWindowFlags(Qt::WindowStaysOnTopHint);
+
     connect(this, SIGNAL(pushInitialPose(bool)), &qnode, SLOT(sendInitialPose(bool)));
     connect(&qnode, SIGNAL(pushGPSData(double, double, double, double)), this, SLOT(updateGPSData(double, double, double, double)));
     connect(&qnode, SIGNAL(pushAlignState(bool)), this, SLOT(updateAlignState(bool)));
@@ -94,9 +96,9 @@ void MainWindow::writeFile()
             fout << gps_x_ << ", " << gps_y_ << ", " << gps_z_ << endl;
             fout << "Odom: ";
             fout << odom_x_ << ", " << odom_y_ << ", " << odom_z_ << endl;
-            double accurate = sqrt(pow(gps_x_-odom_x_,2)+pow(gps_y_-odom_y_,2));
+            //double accurate = sqrt(pow(gps_x_-odom_x_,2)+pow(gps_y_-odom_y_,2));
             fout << "GPS error: " << gps_error_*100.0 << "cm" << endl;
-            fout << "Accurate: " << accurate*100.0 << "cm" << endl << endl;
+            fout << "Accurate: " << accuracy_*100.0 << "cm" << endl << endl;
             std::cout << "write!" << endl;
             writeFlag_ = false;
         }
@@ -122,6 +124,9 @@ void MainWindow::updateGPSData(double x, double y, double z, double error)
     ui->le_gpsy->setText(str);
     str = str.sprintf("%.3lf m", gps_z_);
     ui->le_gpsz->setText(str);
+
+    str = str.sprintf("%.3lf cm", gps_error_*100.0);
+    ui->le_gpserror->setText(str);
 }
 
 void MainWindow::updateAlignState(bool state)
@@ -151,6 +156,10 @@ void MainWindow::updateOdomData(double x, double y, double z)
     ui->le_cury->setText(str);
     str = str.sprintf("%.3lf m", odom_z_);
     ui->le_curz->setText(str);
+
+    accuracy_ = sqrt(pow(gps_x_-odom_x_,2)+pow(gps_y_-odom_y_,2));
+    str = str.sprintf("%.3lf cm", accuracy_*100);
+    ui->le_accuracy->setText(str);
 }
 
 void MainWindow::on_pb_initialpose_clicked()

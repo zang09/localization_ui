@@ -65,6 +65,7 @@ private:
 
     double odom_x_, odom_y_, odom_z_;
     double gps_x_, gps_y_, gps_z_, gps_error_;
+    double accuracy_;
 
 // QWidget interface
 protected:
