@@ -78,10 +78,10 @@ void QNode::run() {
 void QNode::initPubAndSub(ros::NodeHandle node_handle)
 {
     novatel_bestutm_sub_ = node_handle.subscribe("pwk7/bestutm", 1, &QNode::bestUtmCallback, this);
-    align_state_sub_     = node_handle.subscribe("align_state", 1, &QNode::alignStateCallback, this);
-    odom_sub_            = node_handle.subscribe("odom", 1, &QNode::odomCallback, this);
-    odom_gps_sub_        = node_handle.subscribe("gps/odom", 1, &QNode::odomGPSCallback, this);
-    local_gps_client_    = node_handle.serviceClient<hdl_localization::initGPS>("local/gps");
+    align_state_sub_     = node_handle.subscribe("hdl_localization/align_state", 1, &QNode::alignStateCallback, this);
+    odom_sub_            = node_handle.subscribe("hdl_localization/odom", 1, &QNode::odomCallback, this);
+    odom_gps_sub_        = node_handle.subscribe("hdl_localization/gps_odom", 1, &QNode::odomGPSCallback, this);
+    local_gps_client_    = node_handle.serviceClient<hdl_localization::initGPS>("hdl_localization/init_gps");
 }
 
 void QNode::bestUtmCallback(const novatel_gps_msgs::NovatelUtmPosition::ConstPtr &msg)
