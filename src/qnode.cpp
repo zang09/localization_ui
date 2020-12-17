@@ -109,7 +109,6 @@ void QNode::odomCallback(const nav_msgs::Odometry::ConstPtr &msg)
     odomZ_ = msg->pose.pose.position.z;
 
     emit pushOdomData(odomX_, odomY_, odomZ_);
-    emit pushGPSData(gps_odomX_, gps_odomY_, gps_odomZ_, gps_error_);
 }
 
 void QNode::odomGPSCallback(const nav_msgs::Odometry::ConstPtr &msg)
@@ -117,6 +116,8 @@ void QNode::odomGPSCallback(const nav_msgs::Odometry::ConstPtr &msg)
     gps_odomX_ = msg->pose.pose.position.x;
     gps_odomY_ = msg->pose.pose.position.y;
     gps_odomZ_ = msg->pose.pose.position.z;
+
+    emit pushGPSData(gps_odomX_, gps_odomY_, gps_odomZ_, gps_error_);
 }
 
 void QNode::sendInitialPose(bool gps)

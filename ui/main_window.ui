@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>510</width>
-    <height>314</height>
+    <height>341</height>
    </rect>
   </property>
   <property name="acceptDrops">
@@ -279,7 +279,7 @@
       <property name="title">
        <string>Accuracy</string>
       </property>
-      <layout class="QGridLayout" name="gridLayout_5" rowstretch="0,0" columnstretch="1,0,1,0,0">
+      <layout class="QGridLayout" name="gridLayout_5" rowstretch="0" columnstretch="1,0,1">
        <item row="0" column="0">
         <layout class="QHBoxLayout" name="horizontalLayout_6">
          <item>
@@ -290,7 +290,11 @@
           </widget>
          </item>
          <item>
-          <widget class="QLineEdit" name="le_accuracy"/>
+          <widget class="QLineEdit" name="le_accuracy">
+           <property name="text">
+            <string>0.0 cm</string>
+           </property>
+          </widget>
          </item>
         </layout>
        </item>
@@ -304,7 +308,11 @@
           </widget>
          </item>
          <item>
-          <widget class="QLineEdit" name="le_gpserror"/>
+          <widget class="QLineEdit" name="le_gpserror">
+           <property name="text">
+            <string>0.0 cm</string>
+           </property>
+          </widget>
          </item>
         </layout>
        </item>
