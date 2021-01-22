@@ -12,9 +12,9 @@ add_compile_options(-std=c++11)
 ##############################################################################
 find_package(catkin REQUIRED COMPONENTS
  roscpp
- roslib
  std_msgs
  sensor_msgs
+ rviz_flag_plugin
  hdl_localization
 )
 find_package(Qt5Widgets REQUIRED)
@@ -69,7 +69,7 @@ endif()
 ################################################################################
 catkin_package(
   INCLUDE_DIRS include
-  CATKIN_DEPENDS roscpp roslib std_msgs sensor_msgs 
+  CATKIN_DEPENDS roscpp std_msgs sensor_msgs 
   DEPENDS system_lib
 )
 

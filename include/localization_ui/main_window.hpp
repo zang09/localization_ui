@@ -35,11 +35,14 @@ public:
 
 Q_SIGNALS:
     void pushInitialPose(bool gps);
+    void pushVisibleFlag(bool flag);
+    void pushLineInfo(double distance, double degree, int spoint, int epoint, bool flag);
 
 public slots:
     void updateGPSData(double x, double y, double z, double error);
     void updateAlignState(bool state);
     void updateOdomData(double x, double y, double z);
+    void updateTotalPoints(int count);
     void onTimer();
 
 private slots:
@@ -47,6 +50,8 @@ private slots:
     void on_cb_settimer_clicked(bool checked);
     void on_pb_getgps_clicked(bool checked);
     void on_actionGPS_off_toggled(bool arg1);
+    void on_pb_add_clicked();
+    void on_cb_visible_clicked(bool checked);
 
 private:
     Ui::MainWindowDesign *ui;

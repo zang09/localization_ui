@@ -15,6 +15,7 @@
   <depend>std_msgs</depend>
   <depend>sensor_msgs</depend>
   <depend>hdl_localization</depend>
+  <depend>rviz_flag_plugin</depend>
 
   <depend>qtbase5-dev</depend>
   <depend>qt5-qmake</depend>
