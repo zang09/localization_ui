@@ -178,9 +178,12 @@
           <property name="title">
            <string>Accuracy</string>
           </property>
-          <layout class="QGridLayout" name="gridLayout_5" rowstretch="0" columnstretch="1,0,1">
+          <layout class="QGridLayout" name="gridLayout_5" rowstretch="0" columnstretch="3,3,2">
            <item row="0" column="0">
             <layout class="QHBoxLayout" name="horizontalLayout_6">
+             <property name="spacing">
+              <number>6</number>
+             </property>
              <item>
               <widget class="QLabel" name="label_9">
                <property name="text">
@@ -200,7 +203,7 @@
              </item>
             </layout>
            </item>
-           <item row="0" column="2">
+           <item row="0" column="1">
             <layout class="QHBoxLayout" name="horizontalLayout_5">
              <item>
               <widget class="QLabel" name="label_8">
@@ -221,18 +224,29 @@
              </item>
             </layout>
            </item>
-           <item row="0" column="1">
-            <spacer name="horizontalSpacer_2">
-             <property name="orientation">
-              <enum>Qt::Horizontal</enum>
-             </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>40</width>
-               <height>20</height>
-              </size>
-             </property>
-            </spacer>
+           <item row="0" column="2">
+            <layout class="QHBoxLayout" name="horizontalLayout_10">
+             <item>
+              <widget class="QLabel" name="label_15">
+               <property name="text">
+                <string>Speed:</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignCenter</set>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLineEdit" name="le_speed">
+               <property name="text">
+                <string>0 m/s</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignCenter</set>
+               </property>
+              </widget>
+             </item>
+            </layout>
            </item>
           </layout>
          </widget>
@@ -240,7 +254,7 @@
         <item row="0" column="0">
          <widget class="QGroupBox" name="groupBox">
           <property name="title">
-           <string>Current Pose</string>
+           <string>Current Odom</string>
           </property>
           <layout class="QGridLayout" name="gridLayout_3">
            <item row="1" column="0">

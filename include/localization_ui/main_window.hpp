@@ -41,7 +41,7 @@ Q_SIGNALS:
 public slots:
     void updateGPSData(double x, double y, double z, double error);
     void updateAlignState(bool state);
-    void updateOdomData(double x, double y, double z);
+    void updateOdomData(double x, double y, double z, double time);
     void updateTotalPoints(int count);
     void onTimer();
 
@@ -69,6 +69,7 @@ private:
     int timeInterval_;
 
     double odom_x_, odom_y_, odom_z_;
+    double pre_odom_x_, pre_odom_y_, pre_odom_z_, pre_odom_time_;
     double gps_x_, gps_y_, gps_z_, gps_error_;
     double accuracy_;
 

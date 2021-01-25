@@ -51,7 +51,7 @@ Q_SIGNALS:
     void rosShutDown();
     void pushGPSData(double, double, double, double);
     void pushAlignState(bool);
-    void pushOdomData(double, double, double);
+    void pushOdomData(double, double, double, double);
     void pushTotalPoints(int);
 
 public Q_SLOTS:
@@ -78,7 +78,6 @@ private:
 
     double gps_error_;
     double gps_odomX_, gps_odomY_, gps_odomZ_;
-    double odomX_, odomY_, odomZ_;
 };
 
 

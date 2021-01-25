@@ -42,7 +42,7 @@ MainWindow::MainWindow(int argc, char** argv, QWidget *parent) :
     connect(this, SIGNAL(pushLineInfo(double, double, int, int, bool)), &qnode, SLOT(sendMakeFlag(double, double, int, int, bool)));
     connect(&qnode, SIGNAL(pushGPSData(double, double, double, double)), this, SLOT(updateGPSData(double, double, double, double)));
     connect(&qnode, SIGNAL(pushAlignState(bool)), this, SLOT(updateAlignState(bool)));
-    connect(&qnode, SIGNAL(pushOdomData(double, double, double)), this, SLOT(updateOdomData(double, double, double)));
+    connect(&qnode, SIGNAL(pushOdomData(double, double, double, double)), this, SLOT(updateOdomData(double, double, double, double)));
     connect(&qnode, SIGNAL(pushTotalPoints(int)), this, SLOT(updateTotalPoints(int)));
     connect(&qnode, SIGNAL(rosShutDown()), this, SLOT(close()));
 
@@ -157,13 +157,16 @@ void MainWindow::updateAlignState(bool state)
     ui->le_alignstate->setText(alignStateStr_.c_str());
 }
 
-void MainWindow::updateOdomData(double x, double y, double z)
+void MainWindow::updateOdomData(double x, double y, double z, double time)
 {
     QString str;
 
     odom_x_ = x;
     odom_y_ = y;
     odom_z_ = z;
+
+    double distance = sqrt(pow(odom_x_-pre_odom_x_,2)+pow(odom_y_-pre_odom_y_,2)+pow(odom_z_-pre_odom_z_,2));
+    double speed = distance / (time-pre_odom_time_);
 
     str = str.sprintf("%.3lf m", odom_x_);
     ui->le_curx->setText(str);
@@ -181,6 +184,14 @@ void MainWindow::updateOdomData(double x, double y, double z)
       str = str.sprintf("%.3lf m", accuracy_);
     }
     ui->le_accuracy->setText(str);
+
+    str = str.sprintf("%.1lf m/s", speed);
+    ui->le_speed->setText(str);
+
+    pre_odom_x_ = odom_x_;
+    pre_odom_y_ = odom_y_;
+    pre_odom_z_ = odom_z_;
+    pre_odom_time_ = time;
 }
 
 void MainWindow::updateTotalPoints(int count)

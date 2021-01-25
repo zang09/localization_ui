@@ -29,10 +29,7 @@ QNode::QNode(int argc, char** argv ) :
     gps_error_(0.0),
     gps_odomX_(0.0),
     gps_odomY_(0.0),
-    gps_odomZ_(0.0),
-    odomX_(0.0),
-    odomY_(0.0),
-    odomZ_(0.0)
+    gps_odomZ_(0.0)
 {}
 
 QNode::~QNode() {
@@ -109,11 +106,12 @@ void QNode::alignStateCallback(const std_msgs::Bool::ConstPtr &msg)
 
 void QNode::odomCallback(const nav_msgs::Odometry::ConstPtr &msg)
 {
-    odomX_ = msg->pose.pose.position.x;
-    odomY_ = msg->pose.pose.position.y;
-    odomZ_ = msg->pose.pose.position.z;
+    double time = msg->header.stamp.sec + msg->header.stamp.nsec/pow(10,9);
+    double odom_x = msg->pose.pose.position.x;
+    double odom_y = msg->pose.pose.position.y;
+    double odom_z = msg->pose.pose.position.z;
 
-    emit pushOdomData(odomX_, odomY_, odomZ_);
+    emit pushOdomData(odom_x, odom_y, odom_z, time);
 }
 
 void QNode::odomGPSCallback(const nav_msgs::Odometry::ConstPtr &msg)
