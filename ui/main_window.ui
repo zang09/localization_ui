@@ -176,7 +176,7 @@
         <item row="3" column="0">
          <widget class="QGroupBox" name="groupBox_3">
           <property name="title">
-           <string>Accuracy</string>
+           <string>Info</string>
           </property>
           <layout class="QGridLayout" name="gridLayout_5" rowstretch="0" columnstretch="3,3,2">
            <item row="0" column="0">
