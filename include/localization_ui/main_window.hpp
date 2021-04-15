@@ -35,6 +35,7 @@ public:
 
 Q_SIGNALS:
     void pushInitialPose(bool gps);
+    void pushLocalizationOff(bool flag);
     void pushVisibleFlag(bool flag);
     void pushLineInfo(double distance, double degree, int spoint, int epoint, bool flag);
 
@@ -49,7 +50,8 @@ private slots:
     void on_pb_initialpose_clicked();
     void on_cb_settimer_clicked(bool checked);
     void on_pb_getgps_clicked(bool checked);
-    void on_actionGPS_off_toggled(bool arg1);
+    void on_action_GPS_Off_toggled(bool arg1);
+    void on_action_Localization_Off_toggled(bool arg1);
     void on_pb_add_clicked();
     void on_cb_visible_clicked(bool checked);
 
@@ -62,7 +64,7 @@ private:
 
     string alignStateStr_;
     bool connectThread_;
-    bool gpsBtnState_;
+    bool gpsState_;
     bool setTimerState_;
     bool writeFlag_;
     int timeCnt_;

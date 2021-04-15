@@ -17,7 +17,7 @@ MainWindow::MainWindow(int argc, char** argv, QWidget *parent) :
     qnode(argc, argv),
     alignStateStr_("false"),
     connectThread_(false),
-    gpsBtnState_(false),
+    gpsState_(false),
     setTimerState_(false),
     writeFlag_(false),
     timeCnt_(0),
@@ -32,12 +32,13 @@ MainWindow::MainWindow(int argc, char** argv, QWidget *parent) :
 {
     ui->setupUi(this);
     setWindowIcon(QIcon(":/images/icon.png"));
-    setWindowTitle("Localization control UI");
+    setWindowTitle("Localization Control UI");
     qnode.init();
 
     setWindowFlags(Qt::WindowStaysOnTopHint);
 
     connect(this, SIGNAL(pushInitialPose(bool)), &qnode, SLOT(sendInitialPose(bool)));
+    connect(this, SIGNAL(pushLocalizationOff(bool)), &qnode, SLOT(sendLocalizationOff(bool)));
     connect(this, SIGNAL(pushVisibleFlag(bool)), &qnode, SLOT(sendVisibleFlag(bool)));
     connect(this, SIGNAL(pushLineInfo(double, double, int, int, bool)), &qnode, SLOT(sendMakeFlag(double, double, int, int, bool)));
     connect(&qnode, SIGNAL(pushGPSData(double, double, double, double)), this, SLOT(updateGPSData(double, double, double, double)));
@@ -121,13 +122,14 @@ void MainWindow::writeFile()
 
 void MainWindow::updateGPSData(double x, double y, double z, double error)
 {
-    QString str;
+    gpsState_ = true;
 
     gps_x_ = x;
     gps_y_ = y;
     gps_z_ = z;
     gps_error_ = error;
 
+    QString str;
     str = str.sprintf("%.3lf m", gps_x_);
     ui->le_gpsx->setText(str);
     str = str.sprintf("%.3lf m", gps_y_);
@@ -165,7 +167,7 @@ void MainWindow::updateOdomData(double x, double y, double z, double time)
     odom_y_ = y;
     odom_z_ = z;
 
-    double distance = sqrt(pow(odom_x_-pre_odom_x_,2)+pow(odom_y_-pre_odom_y_,2)+pow(odom_z_-pre_odom_z_,2));
+    double distance = sqrt(pow(odom_x_-pre_odom_x_,2)+pow(odom_y_-pre_odom_y_,2));
     double speed = distance / (time-pre_odom_time_);
 
     str = str.sprintf("%.3lf m", odom_x_);
@@ -175,7 +177,8 @@ void MainWindow::updateOdomData(double x, double y, double z, double time)
     str = str.sprintf("%.3lf m", odom_z_);
     ui->le_curz->setText(str);
 
-    accuracy_ = sqrt(pow(gps_x_-odom_x_,2)+pow(gps_y_-odom_y_,2));
+    if(gpsState_)
+      accuracy_ = sqrt(pow(gps_x_-odom_x_,2)+pow(gps_y_-odom_y_,2));
 
     if(accuracy_ < 1.0) {
       str = str.sprintf("%.3lf cm", accuracy_*100);
@@ -185,7 +188,7 @@ void MainWindow::updateOdomData(double x, double y, double z, double time)
     }
     ui->le_accuracy->setText(str);
 
-    str = str.sprintf("%.1lf m/s", speed);
+    str = str.sprintf("%.1lf m/s", floor(speed*10)/10); // round off one decimal place
     ui->le_speed->setText(str);
 
     pre_odom_x_ = odom_x_;
@@ -201,7 +204,7 @@ void MainWindow::updateTotalPoints(int count)
 
 void MainWindow::on_pb_initialpose_clicked()
 {
-    emit pushInitialPose(!gpsBtnState_);
+    emit pushInitialPose(gpsState_);
 }
 
 void MainWindow::on_cb_settimer_clicked(bool checked)
@@ -228,10 +231,16 @@ void MainWindow::on_pb_getgps_clicked(bool checked)
     }
 }
 
-void MainWindow::on_actionGPS_off_toggled(bool arg1)
+void MainWindow::on_action_GPS_Off_toggled(bool arg1)
 {
-    gpsBtnState_ = arg1;
-    ui->groupBox_2->setEnabled(!gpsBtnState_);
+    ui->groupBox_2->setEnabled(!arg1);
+    ui->le_accuracy->setEnabled(!arg1);
+    ui->le_gpserror->setEnabled(!arg1);
+}
+
+void MainWindow::on_action_Localization_Off_toggled(bool arg1)
+{
+    emit pushLocalizationOff(arg1);
 }
 
 void MainWindow::on_cb_visible_clicked(bool checked)
@@ -280,10 +289,6 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
     {
     case Qt::Key_S:
         ui->pb_initialpose->click();
-        break;
-
-    case Qt::Key_G:
-        ui->actionGPS_off->setChecked(!gpsBtnState_);
         break;
     }
 }

@@ -239,7 +239,7 @@
              <item>
               <widget class="QLineEdit" name="le_speed">
                <property name="text">
-                <string>0 m/s</string>
+                <string>0.0 m/s</string>
                </property>
                <property name="alignment">
                 <set>Qt::AlignCenter</set>
@@ -715,7 +715,8 @@
     </property>
     <addaction name="separator"/>
     <addaction name="separator"/>
-    <addaction name="actionGPS_off"/>
+    <addaction name="action_GPS_Off"/>
+    <addaction name="action_Localization_Off"/>
     <addaction name="action_Quit"/>
    </widget>
    <addaction name="menu_File"/>
@@ -746,12 +747,26 @@
     <string>About &amp;Qt</string>
    </property>
   </action>
-  <action name="actionGPS_off">
+  <action name="action_GPS_Off">
    <property name="checkable">
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>GPS off</string>
+    <string>&amp;GPS Off</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+G</string>
+   </property>
+  </action>
+  <action name="action_Localization_Off">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>&amp;Localization Off</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+L</string>
    </property>
   </action>
  </widget>

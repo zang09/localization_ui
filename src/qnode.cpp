@@ -74,16 +74,18 @@ void QNode::run() {
 
 void QNode::initPubAndSub(ros::NodeHandle node_handle)
 {
-    novatel_bestutm_sub_ = node_handle.subscribe("pwk7/bestutm", 1, &QNode::bestUtmCallback, this);
-    align_state_sub_     = node_handle.subscribe("hdl_localization/align_state", 1, &QNode::alignStateCallback, this);
-    odom_sub_            = node_handle.subscribe("hdl_localization/odom", 1, &QNode::odomCallback, this);
-    odom_gps_sub_        = node_handle.subscribe("hdl_localization/gps_odom", 1, &QNode::odomGPSCallback, this);
-    trajectory_sub_      = node_handle.subscribe("hdl_localization/globalmap/trajectory", 1, &QNode::trajectoryCallback, this);
-    make_flag_pub_       = node_handle.advertise<rviz_flag_plugin::PointArray>("rviz/make_flag", 100, true);
-    clear_flag_pub_      = node_handle.advertise<std_msgs::Bool>("rviz/clear_flag", 1);
-    visible_flag_pub_    = node_handle.advertise<std_msgs::Bool>("rviz/visible_flag", 1);
+    novatel_bestutm_sub_   = node_handle.subscribe("pwk7/bestutm", 1, &QNode::bestUtmCallback, this); //temp
+    align_state_sub_       = node_handle.subscribe("hdl_localization/align_state", 1, &QNode::alignStateCallback, this);
+    odom_sub_              = node_handle.subscribe("hdl_localization/odom", 1, &QNode::odomCallback, this);
+    odom_gps_sub_          = node_handle.subscribe("hdl_localization/gps_odom", 1, &QNode::odomGPSCallback, this);
+    trajectory_sub_        = node_handle.subscribe("hdl_localization/globalmap/trajectory", 1, &QNode::trajectoryCallback, this);
 
-    local_gps_client_    = node_handle.serviceClient<hdl_localization::initGPS>("hdl_localization/init_gps");
+    localization_flag_pub_ = node_handle.advertise<std_msgs::Bool>("hdl_localization/localization_flag", 1, true);
+    make_flag_pub_         = node_handle.advertise<rviz_flag_plugin::PointArray>("rviz/make_flag", 100, true);
+    clear_flag_pub_        = node_handle.advertise<std_msgs::Bool>("rviz/clear_flag", 1, true);
+    visible_flag_pub_      = node_handle.advertise<std_msgs::Bool>("rviz/visible_flag", 1, true);
+
+    local_gps_client_      = node_handle.serviceClient<hdl_localization::initGPS>("hdl_localization/init_gps");
 }
 
 void QNode::bestUtmCallback(const novatel_gps_msgs::NovatelUtmPosition::ConstPtr &msg)
@@ -184,6 +186,14 @@ void QNode::sendInitialPose(bool gps)
             ROS_ERROR("Failed to call service local gps");
         }
     }
+}
+
+void QNode::sendLocalizationOff(bool flag)
+{
+    std_msgs::Bool msg;
+    msg.data = flag;
+
+    localization_flag_pub_.publish(msg);
 }
 
 void QNode::sendVisibleFlag(bool flag)

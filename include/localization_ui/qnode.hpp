@@ -56,6 +56,7 @@ Q_SIGNALS:
 
 public Q_SLOTS:
     void sendInitialPose(bool);
+    void sendLocalizationOff(bool);
     void sendVisibleFlag(bool);
     void sendMakeFlag(double, double, int, int, bool);
 
@@ -71,6 +72,7 @@ private:
     ros::Publisher  make_flag_pub_;
     ros::Publisher  clear_flag_pub_;
     ros::Publisher  visible_flag_pub_;
+    ros::Publisher  localization_flag_pub_;
 
     ros::ServiceClient local_gps_client_;
 
